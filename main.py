@@ -165,14 +165,20 @@ class Example(Frame):
                 def perimeter(self):
                     return 2 * (self.x + self.y)
 
-                def draw_figure(self):
-                    canvas = Figure.draw_figure(self)
+                def change_x_y_for_draw(self):
+
                     if self.x >= self.y:
                         x = 0.6 * width_frame
                         y = self.y / self.x * (0.6 * height_frame)
                     else:
                         y = 0.6 * height_frame
                         x = self.x / self.y * (0.6 * width_frame)
+                    return x, y
+
+
+                def draw_figure(self):
+                    x, y = Rectangle.change_x_y_for_draw(self)
+
                     canvas_for_figure.create_rectangle(
                         center_x_frame - x / 2, center_y_frame - y / 2,
                         center_x_frame + x / 2, center_y_frame + y / 2,
@@ -196,12 +202,7 @@ class Example(Frame):
                     return 0.5 * self.x * self.y
 
                 def draw_figure(self):
-                    if self.x >= self.y:
-                        x = 0.7 * width_frame
-                        y = self.y / self.x * (0.7 * height_frame)
-                    else:
-                        y = 0.7 * height_frame
-                        x = self.x / self.y * (0.7 * width_frame)
+                    x, y = Rectangle.change_x_y_for_draw(self)
 
                     canvas_for_figure.create_line(
                                        center_x_frame - x / 2, center_y_frame + y / 2,
@@ -271,12 +272,8 @@ class Example(Frame):
                     return 4 * self.x
 
                 def draw_figure(self):
-                    if self.x >= self.y:
-                        x = 0.7 * width_frame
-                        y = self.y / self.x * (0.7 * height_frame)
-                    else:
-                        y = 0.7 * height_frame
-                        x = self.x / self.y * (0.7 * width_frame)
+                    x, y = Rectangle.change_x_y_for_draw(self)
+
                     canvas_for_figure.create_line(
                         center_x_frame, center_y_frame - y / 2,
                                         center_x_frame - x / 2, center_y_frame,
@@ -515,29 +512,24 @@ class Example(Frame):
                     return PI*self.x**2 * self.y
 
                 def draw_figure(self):
-                    if self.x >= self.y:
-                        x = 0.5 * width_frame
-                        y = self.y / self.x * (0.6 * height_frame)
-                    else:
-                        y = 0.5 * height_frame
-                        x = self.x / self.y * (0.6 * width_frame)
+                    x, y = Rectangle.change_x_y_for_draw(self)
 
                     canvas_for_figure.create_oval(
                         center_x_frame - x // 2, center_y_frame - y // 2,
-                        center_x_frame + x // 2, (center_y_frame - y // 2) + 30,
+                        center_x_frame + x // 2, (center_y_frame - y // 2) + 24,
                         width=width_line
                     )
 
                     canvas_for_figure.create_arc(
                         center_x_frame - x // 2, center_y_frame + y // 2,
-                        center_x_frame + x // 2, (center_y_frame + y // 2) + 30, start=180,
+                        center_x_frame + x // 2, (center_y_frame + y // 2) + 24, start=180,
                         extent=180, style=ARC,
                         width=width_line
                     )
 
                     canvas_for_figure.create_line(
-                          center_x_frame - x // 2, center_y_frame - y // 2 + 15,
-                          center_x_frame - x // 2, center_y_frame + y // 2 + 15,
+                          center_x_frame - x // 2, center_y_frame - y // 2 + 12,
+                          center_x_frame - x // 2, center_y_frame + y // 2 + 12,
                         width=width_line
                                                   )
                     canvas_for_figure.create_line(
@@ -546,7 +538,7 @@ class Example(Frame):
                         width=width_line
                                                   )
 
-            class Cone(Cylinder, Figure):
+            class Cone(Rectangle, Figure):
 
                 def __init__(self, x, y):
                     super().__init__(x, y)
@@ -565,26 +557,22 @@ class Example(Frame):
                     return (1 / 3) * PI * (self.x ** 2) * self.y
 
                 def draw_figure(self):
-                    if self.x >= self.y:
-                        x = 0.4 * width_frame
-                        y = self.y / self.x * (0.5 * height_frame)
-                    else:
-                        y = 0.4 * height_frame
-                        x = self.x / self.y * (0.5 * width_frame)
+                    x, y = Rectangle.change_x_y_for_draw(self)
+
                     canvas_for_figure.create_arc(
                         center_x_frame - x // 2, center_y_frame + y // 2,
-                        center_x_frame + x // 2, (center_y_frame + y // 2) + 50,
+                        center_x_frame + x // 2, (center_y_frame + y // 2) + 24,
                         start=180,
                         extent=180, style=ARC, width=width_line
                     )
 
                     canvas_for_figure.create_line(
-                        center_x_frame - x // 2, center_y_frame + y // 2 + 25,
+                        center_x_frame - x // 2, center_y_frame + y // 2 + 12,
                         center_x_frame, center_y_frame - y // 2,
                         width=width_line
                     )
                     canvas_for_figure.create_line(
-                        center_x_frame + x // 2, center_y_frame + y // 2 + 25,
+                        center_x_frame + x // 2, center_y_frame + y // 2 + 12,
                         center_x_frame, center_y_frame - y // 2,
                         width=width_line
                     )
