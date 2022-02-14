@@ -5,7 +5,7 @@ from tkinter.ttk import Frame, Label, Entry, Button
 PI = 3.14
 
 
-class Example(Frame):
+class GraphicInterface(Frame):
 
     def __init__(self):
         super().__init__()
@@ -21,33 +21,33 @@ class Example(Frame):
         self.master.title("Геометрический калькулятор")
         self.pack(fill=BOTH, expand=1)
 
-        frame1 = Frame(self)
-        frame1.pack(fill=X)
+        frame_row_1 = Frame(self)
+        frame_row_1.pack(fill=X)
 
-        lbl1 = Label(frame1, text="Выберите фигуру", width=20)
-        lbl1.pack(side=LEFT, padx=5, pady=5)
+        text_row_1 = Label(frame_row_1, text="Выберите фигуру", width=20)
+        text_row_1.pack(side=LEFT, padx=5, pady=5)
 
-        list_figures = Listbox(frame1)
+        list_figures = Listbox(frame_row_1)
         list_figures.pack(fill=X, pady=5, padx=5)
         i = 0
         for figure in figures:
             list_figures.insert(i, figure)
             i += 1
 
-        frame2 = Frame(self)
-        frame2.pack(fill=X)
+        frame_row_2 = Frame(self)
+        frame_row_2.pack(fill=X)
 
-        lbl2 = Label(frame2, text="Размеры фигуры", width=20)
-        lbl2.pack(side=LEFT, padx=5, pady=5)
+        text_row_2 = Label(frame_row_2, text="Размеры фигуры", width=20)
+        text_row_2.pack(side=LEFT, padx=5, pady=5)
 
-        size_figure = Entry(frame2, width=20)
-        size_figure.pack(fill=X, side=LEFT, padx=5, expand=True)
+        figure_sizes = Entry(frame_row_2, width=20)
+        figure_sizes.pack(fill=X, side=LEFT, padx=5, expand=True)
 
-        frame3 = Frame(self)
-        frame3.pack(fill=X)
+        frame_row_3 = Frame(self)
+        frame_row_3.pack(fill=X)
 
-        frame4 = Frame(self)
-        frame4.pack(fill=X)
+        frame_row_4 = Frame(self)
+        frame_row_4.pack(fill=X)
 
         description = """ Выберите фигуру и далее введите через пробел параметры фигуры
                      Круг - 1 параметр (радиус)
@@ -64,22 +64,22 @@ class Example(Frame):
                      Пирамида - 3 параметра (длины основания и высота)
                      """
 
-        lbl_description = Label(frame4, text=description, width=90)
-        lbl_description.pack(side=LEFT)
+        text_description = Label(frame_row_4, text=description, width=90)
+        text_description.pack(side=LEFT)
 
-        frame5 = Frame(self)
-        frame5.pack(fill=X, expand=1)
+        frame_for_draw_figure = Frame(self)
+        frame_for_draw_figure.pack(fill=X, expand=1)
 
-        canvas_for_figure = Canvas(frame5)
+        canvas_for_figure = Canvas(frame_for_draw_figure)
         canvas_for_figure.pack()
 
-        answer = StringVar()
+        p_s_v_figure = StringVar()
 
-        lbl_answer = Label(frame4,
-                           textvariable=answer,
+        text_psv_figure = Label(frame_row_4,
+                           textvariable=p_s_v_figure,
                            width=200)
-        lbl_answer.config(font=("Courier", 16, "italic"))
-        lbl_answer.pack()
+        text_psv_figure.config(font=("Courier", 16, "italic"))
+        text_psv_figure.pack()
 
         def perform_calculations():
 
@@ -90,19 +90,14 @@ class Example(Frame):
             width_line = 2
 
             class Figure:
-                width_frame = 300
-                height_frame = 300
-                center_x_frame = width_frame / 2
-                center_y_frame = height_frame / 2
-                width_line = 2
-
-                def square(self):
+                
+                def get_square(self):
                     return "Отсутствует"
 
-                def perimeter(self):
+                def get_perimeter(self):
                     return "Отсутствует"
 
-                def volume(self):
+                def get_volume(self):
                     return "Отсутствует"
 
                 def draw_figure(self):
@@ -115,14 +110,17 @@ class Example(Frame):
                     self.x = x
 
                 @staticmethod
-                def name_figure():
+                def get_name_figure():
                     return "Квадрат"
 
-                def area(self):
+                def get_area(self):
                     return self.x ** 2
 
-                def perimeter(self):
+                def get_perimeter(self):
                     return 4 * self.x
+
+                def change_x_for_draw(self):
+                    return 0.6 * width_frame
 
                 def draw_figure(self):
                     canvas_for_figure.create_rectangle(
@@ -131,24 +129,27 @@ class Example(Frame):
                         width=width_line
                     )
 
-            class Circle(Figure):
+            class Circle(Square, Figure):
 
-                def __init__(self, r):
-                    super().__init__()
-                    self.r = r
+                def __init__(self, x):
+                    super().__init__(x)
+                    # self.x = x
 
                 @staticmethod
                 def name_figure():
                     return "Круг"
 
-                def area(self):
-                    return PI * self.r ** 2
+                def get_area(self):
+                    return PI * self.x ** 2
 
-                def perimeter(self):
-                    return 2 * PI * self.r
+                def get_perimeter(self):
+                    return 2 * PI * self.x
+
+
+
 
                 def draw_figure(self):
-                    x = 0.6 * width_frame
+                    x = Square.change_x_for_draw(self)
                     canvas_for_figure.create_oval(center_x_frame - x/2, center_y_frame - x/2,
                                                   center_x_frame + x/2, center_y_frame + x/2,
                                                   width=width_line)
@@ -160,13 +161,13 @@ class Example(Frame):
                     self.y = y
 
                 @staticmethod
-                def name_figure():
+                def get_name_figure():
                     return "Прямоугольник"
 
-                def area(self):
+                def get_area(self):
                     return self.x * self.y
 
-                def perimeter(self):
+                def get_perimeter(self):
                     return 2 * (self.x + self.y)
 
                 def change_x_y_for_draw(self):
@@ -195,13 +196,13 @@ class Example(Frame):
                     super().__init__(x, y)
 
                 @staticmethod
-                def name_figure():
+                def get_name_figure():
                     return "Треугольник"
 
-                def perimeter(self):
+                def get_perimeter(self):
                     return self.x + self.y + (self.x ** 2 + self.y ** 2) ** 0.5
 
-                def area(self):
+                def get_area(self):
                     return 0.5 * self.x * self.y
 
                 def draw_figure(self):
@@ -226,24 +227,24 @@ class Example(Frame):
                     self.z = z
 
                 @staticmethod
-                def name_figure():
+                def get_name_figure():
                     return "Трапеция"
 
-                def area(self):
+                def get_area(self):
                     return self.y*(self.x+self.z)/2
 
-                def perimetr(self):
+                def get_perimetr(self):
                     return self.x + self.z + 2*((((self.x - self.z)/2)**2 + self.y**2)**0.5)
 
                 def change_x_y_z_for_draw(self):
                     if self.x > self.y and self.x > self.z:
                         x = 0.7 * width_frame
                         y = (self.y / self.x) * (0.7 * height_frame)
-                        z = (self.z / self.x) * (0.7 * height_frame)
+                        z = (self.z / self.x) * (0.2 * height_frame)
                     elif self.y > self.z and self.y > self.x:
                         y = 0.7 * height_frame
                         x = (self.x / self.y) * (0.7 * width_frame)
-                        z = (self.z / self.y) * (0.7 * height_frame)
+                        z = (self.z / self.y) * (0.2 * height_frame)
                     elif self.z > self.x and self.z > self.y:
                         z = 0.2 * width_frame
                         y = (self.y / self.z) * 0.7 * height_frame
@@ -268,13 +269,13 @@ class Example(Frame):
                     super().__init__(x, y)
 
                 @staticmethod
-                def name_figure():
+                def get_name_figure():
                     return "Ромб"
 
-                def area(self):
+                def get_area(self):
                     return self.x * self.y
 
-                def perimeter(self):
+                def get_perimeter(self):
                     return 4 * self.x
 
                 def draw_figure(self):
@@ -291,25 +292,25 @@ class Example(Frame):
 
             class Sphere(Circle, Figure):
 
-                def __init__(self, r):
-                    super().__init__(r)
+                def __init__(self, x):
+                    super().__init__(x)
 
                 @staticmethod
-                def name_figure():
+                def get_name_figure():
                     return "Сфера"
 
-                def perimeter(self):
-                    return Figure.perimeter(self)
+                def get_perimeter(self):
+                    return Figure.get_perimeter(self)
 
-                def area(self):
-                    return 4 * PI * self.r
+                def get_area(self):
+                    return 4 * PI * self.x
 
-                def volume(self):
-                    return (4 / 3) * self.r ** 3
+                def get_volume(self):
+                    return (4 / 3) * self.x ** 3
 
                 def draw_figure(self):
                     Circle.draw_figure(self)
-                    x = 0.6 * width_frame
+                    x = Square.change_x_for_draw(self)
 
                     canvas_for_figure.create_arc(
                         center_x_frame - x/2, center_y_frame - 20,
@@ -332,16 +333,16 @@ class Example(Frame):
                     super().__init__(x)
 
                 @staticmethod
-                def name_figure():
+                def get_name_figure():
                     return "Куб"
 
-                def area(self):
+                def get_area(self):
                     return 6 * self.x
 
-                def perimeter(self):
+                def get_perimeter(self):
                     return 12 * self.x
 
-                def volume(self):
+                def get_volume(self):
                     return self.x ** 3
 
                 def draw_figure(self):
@@ -380,16 +381,16 @@ class Example(Frame):
                     self.z = z
 
                 @staticmethod
-                def name_figure():
+                def get_name_figure():
                     return "Параллелепипед"
 
-                def area(self):
+                def get_area(self):
                     return 2 * (self.x * self.y + self.x * self.z + self.y * self.z)
 
-                def volume(self):
+                def get_volume(self):
                     return self.x * self.y * self.z
 
-                def perimeter(self):
+                def get_perimeter(self):
                     return 4 * (self.x + self.y + self.z)
 
                 def draw_figure(self):
@@ -437,13 +438,13 @@ class Example(Frame):
                     super().__init__(x, y, z)
 
                 @staticmethod
-                def name_figure():
+                def get_name_figure():
                     return "Пирамида"
 
-                def volume(self):
+                def get_volume(self):
                     return (1 / 3) * self.x * self.y * self.z
 
-                def area(self):
+                def get_area(self):
                     return self.x * self.y + self.x * self.z + self.y * self.z
 
                 def draw_figure(self):
@@ -482,16 +483,16 @@ class Example(Frame):
                     self.y = y
 
                 @staticmethod
-                def name_figure():
+                def get_name_figure():
                     return "Цилиндр"
 
-                def perimeter(self):
-                    return Figure.perimeter(self)
+                def get_perimeter(self):
+                    return Figure.get_perimeter(self)
 
-                def area(self):
+                def get_area(self):
                     return 2 * PI * self.x * self.y
 
-                def volume(self):
+                def get_volume(self):
                     return PI*self.x**2 * self.y
 
                 def draw_figure(self):
@@ -527,16 +528,16 @@ class Example(Frame):
                     super().__init__(x, y)
 
                 @staticmethod
-                def name_figure():
+                def get_name_figure():
                     return "Конус"
 
-                def perimeter(self):
-                    return Figure.perimeter(self)
+                def get_perimeter(self):
+                    return Figure.get_perimeter(self)
 
-                def area(self):
+                def get_area(self):
                     return PI * self.x * (self.y ** 2 + self.x ** 2) ** 0.5
 
-                def volume(self):
+                def get_volume(self):
                     return (1 / 3) * PI * (self.x ** 2) * self.y
 
                 def draw_figure(self):
@@ -562,7 +563,7 @@ class Example(Frame):
 
             canvas_for_figure.delete("all")
 
-            parametrs_list = size_figure.get().split()
+            parametrs_list = figure_sizes.get().split()
             parametrs_list = tuple(map(int, parametrs_list))
 
             for a in parametrs_list:
@@ -596,24 +597,24 @@ class Example(Frame):
                                         }
                 figure = figures_with3_params[name_figure]
 
-            square = figure.area()
-            perimetr = figure.perimeter()
-            volume = figure.volume()
+            square = figure.get_area()
+            perimetr = figure.get_perimeter()
+            volume = figure.get_volume()
 
-            answer.set(f"Площадь фигуры - {square}\nПериметр фигуры - {perimetr}\nОбъем фигуры - {volume}")
+            p_s_v_figure.set(f"Площадь фигуры - {square}\nПериметр фигуры - {perimetr}\nОбъем фигуры - {volume}")
 
             figure.draw_figure()
 
-            lbl_answer.pack(side=BOTTOM)
+            text_psv_figure.pack(side=BOTTOM)
 
-        calculate_button = Button(frame3, text="Посчитать")
+        calculate_button = Button(frame_row_3, text="Посчитать")
         calculate_button.pack(side=RIGHT, padx=5, pady=5)
         calculate_button.config(command=perform_calculations)
 
 
 def main():
     root = Tk()
-    app = Example()
+    app = GraphicInterface()
     root.update_idletasks()
     root.mainloop()
 
