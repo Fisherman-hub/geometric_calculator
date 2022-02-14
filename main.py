@@ -103,6 +103,10 @@ class GraphicInterface(Frame):
                 def draw_figure(self):
                     pass
 
+                @classmethod
+                def cls_method(cls):
+                    return 'cls Method'
+
             class Square(Figure):
 
                 def __init__(self, x):
