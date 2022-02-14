@@ -87,10 +87,14 @@ class Example(Frame):
             height_frame = 300
             center_x_frame = width_frame / 2
             center_y_frame = height_frame / 2
-
             width_line = 2
 
             class Figure:
+                width_frame = 300
+                height_frame = 300
+                center_x_frame = width_frame / 2
+                center_y_frame = height_frame / 2
+                width_line = 2
 
                 def square(self):
                     return "Отсутствует"
@@ -166,7 +170,6 @@ class Example(Frame):
                     return 2 * (self.x + self.y)
 
                 def change_x_y_for_draw(self):
-
                     if self.x >= self.y:
                         x = 0.6 * width_frame
                         y = self.y / self.x * (0.6 * height_frame)
@@ -232,8 +235,7 @@ class Example(Frame):
                 def perimetr(self):
                     return self.x + self.z + 2*((((self.x - self.z)/2)**2 + self.y**2)**0.5)
 
-
-                def draw_figure(self):
+                def change_x_y_z_for_draw(self):
                     if self.x > self.y and self.x > self.z:
                         x = 0.7 * width_frame
                         y = (self.y / self.x) * (0.7 * height_frame)
@@ -243,9 +245,13 @@ class Example(Frame):
                         x = (self.x / self.y) * (0.7 * width_frame)
                         z = (self.z / self.y) * (0.7 * height_frame)
                     elif self.z > self.x and self.z > self.y:
-                        z = 0.7 * width_frame
+                        z = 0.2 * width_frame
                         y = (self.y / self.z) * 0.7 * height_frame
                         x = (self.x / self.z) * 0.7 * width_frame
+                    return x, y, z
+
+                def draw_figure(self):
+                    x, y, z = Trapezoid.change_x_y_z_for_draw(self)
 
                     canvas_for_figure.create_line(
                         center_x_frame - x / 2, center_y_frame + y / 2,
@@ -366,7 +372,7 @@ class Example(Frame):
                         dash=(10, 10)
                                        )
 
-            class Parallelepiped(Rectangle, Figure):
+            class Parallelepiped(Trapezoid, Figure):
 
                 def __init__(self, x, y, z):
                     self.x = x
@@ -387,19 +393,7 @@ class Example(Frame):
                     return 4 * (self.x + self.y + self.z)
 
                 def draw_figure(self):
-                    if self.x > self.y and self.x > self.z:
-                        x = 0.7 * width_frame - self.z
-                        y = (self.y / self.x) * (0.8 * height_frame) - self.z
-                        z = (self.z / self.x) * (0.2 * (height_frame ** 2 + width_frame ** 2) ** 0.5)
-                    elif self.y > self.z and self.y > self.x:
-                        y = 0.7 * height_frame - self.z
-                        x = (self.x / self.y) * (0.8 * width_frame) - self.z
-                        z = (self.z / self.y) * (0.2 * (height_frame ** 2 + width_frame ** 2) ** 0.5)
-                    elif self.z > self.x and self.z > self.y:
-                        z = (0.2 * (height_frame ** 2 + width_frame ** 2) ** 0.5) - self.z
-                        y = (self.y / self.z) * 0.8 * height_frame - self.z
-                        x = (self.x / self.z) * (0.8 * width_frame)
-
+                    x, y, z = Trapezoid.change_x_y_z_for_draw(self)
 
                     canvas_for_figure.create_line(
                         center_x_frame - x / 2, center_y_frame - y / 2,
@@ -434,7 +428,7 @@ class Example(Frame):
                         dash=(10, 10),
                     )
 
-            class Pyramid(Parallelepiped, Figure):
+            class Pyramid(Trapezoid, Figure):
                 ''' x - сторона основания пирамиды
                     y - сторона основания пирамиды
                     z - высота пирамиды'''
@@ -453,18 +447,7 @@ class Example(Frame):
                     return self.x * self.y + self.x * self.z + self.y * self.z
 
                 def draw_figure(self):
-                    if self.x > self.y and self.x > self.z:
-                        x = 0.7 * width_frame - self.z
-                        y = (self.y / self.x) * (0.8 * height_frame) - self.z
-                        z = (self.z / self.x) * (0.2 * (height_frame ** 2 + width_frame ** 2) ** 0.5)
-                    elif self.y > self.z and self.y > self.x:
-                        y = 0.7 * height_frame - self.z
-                        x = (self.x / self.y) * (0.8 * width_frame) - self.z
-                        z = (self.z / self.y) * (0.2 * (height_frame ** 2 + width_frame ** 2) ** 0.5)
-                    elif self.z > self.x and self.z > self.y:
-                        z = (0.2 * (height_frame ** 2 + width_frame ** 2) ** 0.5) - self.z
-                        y = (self.y / self.z) * 0.8 * height_frame - self.z
-                        x = (self.x / self.z) * (0.8 * width_frame)
+                    x, y, z = Trapezoid.change_x_y_z_for_draw(self)
 
 
                     canvas_for_figure.create_line(
@@ -630,7 +613,6 @@ class Example(Frame):
 
 def main():
     root = Tk()
-    # root.geometry("1000x1000+50+50")
     app = Example()
     root.update_idletasks()
     root.mainloop()
