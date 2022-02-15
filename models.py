@@ -8,7 +8,25 @@ width_line = 2
 PI = 3.14
 
 
-class Paint:
+class X_ForPaint:
+    @staticmethod
+    def change_x_for_draw():
+        return 0.6 * width_frame
+
+
+class XY_ForPaint:
+    @staticmethod
+    def change_x_y_for_draw(x, y):
+        if x >= y:
+            x = 0.6 * width_frame
+            y = y / x * (0.6 * height_frame)
+        else:
+            y = 0.6 * height_frame
+            x = x / y * (0.6 * width_frame)
+        return x, y
+
+
+class XYZ_ForPaint:
     @staticmethod
     def change_x_y_z_for_draw(x, y, z):
         if x > y and x > z:
@@ -25,22 +43,8 @@ class Paint:
             x = (x / z) * 0.7 * width_frame
         return x, y, z
 
-        pass
 
-    @staticmethod
-    def change_x_y_for_draw(x, y):
-        if x >= y:
-            x = 0.6 * width_frame
-            y = y / x * (0.6 * height_frame)
-        else:
-            y = 0.6 * height_frame
-            x = x / y * (0.6 * width_frame)
-        return x, y
-
-    @staticmethod
-    def change_x_for_draw():
-        return 0.6 * width_frame
-
+class Paint:
     def draw_figure(self, canvas_for_figure):
         pass
 
@@ -61,7 +65,7 @@ class Figure:
         return 'cls Method'
 
 
-class Square(Figure, Paint):
+class Square(Figure, Paint, X_ForPaint):
 
     def __init__(self, x):
         super().__init__()
@@ -87,13 +91,13 @@ class Square(Figure, Paint):
         )
 
 
-class Circle(Square, Figure, Paint):
+class Circle(Square, Figure, Paint, X_ForPaint):
 
     def __init__(self, x):
         super().__init__(x)
 
     @staticmethod
-    def name_figure():
+    def get_name_figure():
         return "Круг"
 
     def get_area(self):
@@ -105,13 +109,13 @@ class Circle(Square, Figure, Paint):
     def draw_figure(self, canvas_for_figure):
         Paint.draw_figure(self, canvas_for_figure)
 
-        x = Paint.change_x_for_draw()
+        x = X_ForPaint.change_x_for_draw()
         canvas_for_figure.create_oval(center_x_frame - x / 2, center_y_frame - x / 2,
                                       center_x_frame + x / 2, center_y_frame + x / 2,
                                       width=width_line)
 
 
-class Rectangle(Square, Figure):
+class Rectangle(Square, Figure, XY_ForPaint):
 
     def __init__(self, x, y):
         super().__init__(x)
@@ -130,7 +134,7 @@ class Rectangle(Square, Figure):
     def draw_figure(self, canvas_for_figure):
         Paint.draw_figure(self, canvas_for_figure)
 
-        x, y = Paint.change_x_y_for_draw(self.x, self.y)
+        x, y = XY_ForPaint.change_x_y_for_draw(self.x, self.y)
 
         canvas_for_figure.create_rectangle(
             center_x_frame - x / 2, center_y_frame - y / 2,
@@ -139,7 +143,7 @@ class Rectangle(Square, Figure):
         )
 
 
-class Triangle(Rectangle):
+class Triangle(Rectangle, XY_ForPaint):
 
     def __init__(self, x, y):
         super().__init__(x, y)
@@ -157,7 +161,7 @@ class Triangle(Rectangle):
     def draw_figure(self, canvas_for_figure):
         Paint.draw_figure(self, canvas_for_figure)
 
-        x, y = Paint.change_x_y_for_draw(self.x, self.y)
+        x, y = XY_ForPaint.change_x_y_for_draw(self.x, self.y)
 
         canvas_for_figure.create_line(
             center_x_frame - x / 2, center_y_frame + y / 2,
@@ -168,7 +172,7 @@ class Triangle(Rectangle):
         )
 
 
-class Trapezoid(Rectangle, Figure, Paint):
+class Trapezoid(Rectangle, Figure, Paint, XYZ_ForPaint):
     """ x - нижняя грань трапеции
         y - высота
         z - верхняя грань трапеции"""
@@ -189,7 +193,7 @@ class Trapezoid(Rectangle, Figure, Paint):
 
     def draw_figure(self, canvas_for_figure):
         Paint.draw_figure(self, canvas_for_figure)
-        x, y, z = Paint.change_x_y_z_for_draw(self.x, self.y, self.z)
+        x, y, z = XYZ_ForPaint.change_x_y_z_for_draw(self.x, self.y, self.z)
 
         canvas_for_figure.create_line(
             center_x_frame - x / 2, center_y_frame + y / 2,
@@ -201,7 +205,7 @@ class Trapezoid(Rectangle, Figure, Paint):
         )
 
 
-class Rhombus(Rectangle, Figure, Paint):
+class Rhombus(Rectangle, Figure, Paint, XY_ForPaint):
 
     def __init__(self, x, y):
         super().__init__(x, y)
@@ -219,7 +223,7 @@ class Rhombus(Rectangle, Figure, Paint):
     def draw_figure(self, canvas_for_figure):
         Paint.draw_figure(self, canvas_for_figure)
 
-        x, y = Paint.change_x_y_for_draw(self.x, self.y)
+        x, y = XY_ForPaint.change_x_y_for_draw(self.x, self.y)
 
         canvas_for_figure.create_line(
             center_x_frame, center_y_frame - y / 2,
@@ -231,7 +235,7 @@ class Rhombus(Rectangle, Figure, Paint):
         )
 
 
-class Sphere(Circle, Figure, Paint):
+class Sphere(Circle, Figure, Paint, X_ForPaint):
 
     def __init__(self, x):
         super().__init__(x)
@@ -253,7 +257,7 @@ class Sphere(Circle, Figure, Paint):
         Paint.draw_figure(self, canvas_for_figure)
         Circle.draw_figure(self, canvas_for_figure)
 
-        x = Paint.change_x_for_draw()
+        x = X_ForPaint.change_x_for_draw()
 
         canvas_for_figure.create_arc(
             center_x_frame - x / 2, center_y_frame - 20,
@@ -341,7 +345,7 @@ class Parallelepiped(Trapezoid, Figure, Paint):
 
     def draw_figure(self, canvas_for_figure):
         Paint.draw_figure(self, canvas_for_figure)
-        x, y, z = Paint.change_x_y_z_for_draw(self.x, self.y, self.z)
+        x, y, z = XYZ_ForPaint.change_x_y_z_for_draw(self.x, self.y, self.z)
 
         canvas_for_figure.create_line(
             center_x_frame - x / 2, center_y_frame - y / 2,
@@ -377,7 +381,7 @@ class Parallelepiped(Trapezoid, Figure, Paint):
         )
 
 
-class Pyramid(Trapezoid, Figure, Paint):
+class Pyramid(Trapezoid, Figure, Paint, XYZ_ForPaint):
     ''' x - сторона основания пирамиды
         y - сторона основания пирамиды
         z - высота пирамиды'''
@@ -397,7 +401,7 @@ class Pyramid(Trapezoid, Figure, Paint):
 
     def draw_figure(self, canvas_for_figure):
         Paint.draw_figure(self, canvas_for_figure)
-        x, y, z = Paint.change_x_y_z_for_draw(self.x, self.y, self.z)
+        x, y, z = XYZ_ForPaint.change_x_y_z_for_draw(self.x, self.y, self.z)
 
         canvas_for_figure.create_line(
             center_x_frame, center_y_frame - y / 2,
@@ -425,8 +429,7 @@ class Pyramid(Trapezoid, Figure, Paint):
         )
 
 
-class Cylinder(Rectangle, Figure, Paint):
-
+class Cylinder(Rectangle, Figure, Paint, XY_ForPaint):
     def __init__(self, x, y):
         self.x = x
         self.y = y
@@ -446,7 +449,7 @@ class Cylinder(Rectangle, Figure, Paint):
 
     def draw_figure(self, canvas_for_figure):
         Paint.draw_figure(self, canvas_for_figure)
-        x, y = Paint.change_x_y_for_draw(self.x, self.y)
+        x, y = XY_ForPaint.change_x_y_for_draw(self.x, self.y)
 
         canvas_for_figure.create_oval(
             center_x_frame - x // 2, center_y_frame - y // 2,
@@ -473,7 +476,7 @@ class Cylinder(Rectangle, Figure, Paint):
         )
 
 
-class Cone(Rectangle, Figure, Paint):
+class Cone(Rectangle, Figure, Paint, XY_ForPaint):
 
     def __init__(self, x, y):
         super().__init__(x, y)
@@ -493,7 +496,7 @@ class Cone(Rectangle, Figure, Paint):
 
     def draw_figure(self, canvas_for_figure):
         Paint.draw_figure(self, canvas_for_figure)
-        x, y = Paint.change_x_y_for_draw(self.x, self.y)
+        x, y = XY_ForPaint.change_x_y_for_draw(self.x, self.y)
 
         canvas_for_figure.create_arc(
             center_x_frame - x // 2, center_y_frame + y // 2,
